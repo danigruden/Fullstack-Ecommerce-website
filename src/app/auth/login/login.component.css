@@ -1,0 +1,18 @@
+mat-form-field {
+  width:100% !important;
+}
+
+.mat-card {
+  width: 40% !important;
+    margin:1rem auto !important;
+    text-align: center;
+}
+
+mat-spinner {
+  margin:auto;
+}
+
+ .mat-raised-button {
+  width: 15% !important;
+  margin:1rem auto !important;
+}

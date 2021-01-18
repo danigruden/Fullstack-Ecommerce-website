@@ -1,0 +1,276 @@
+<div class="preloader" *ngIf="isLoading">
+  <div class="preloader-inner">
+    <div class="preloader-icon">
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<!-- Product Style -->
+<section class="product-area shop-sidebar shop section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-12">
+        <div class="shop-sidebar">
+          <div class="single-widget category" style="margin-top: 2.5rem;">
+            <h3 class="title">Search</h3>
+            <ul class="category-list">
+              <li>
+                <input
+                  [(ngModel)]="keywordInInput"
+                  placeholder="Search products..."
+                  (keyup)="onSearchByKeyword()"
+                />
+              </li>
+            </ul>
+          </div>
+          <!-- Single Widget -->
+          <div class="single-widget category">
+            <h3 class="title">Categories</h3>
+            <ul class="category-list">
+              <ul class="check-box-list">
+                <li>
+                  <label class="checkbox-inline" for="1"
+                    ><input
+                      class="clickable"
+                      (change)="onSelectCategory('electricCategory')"
+                      type="checkbox" />
+                    Electric guitars<span class="count"></span
+                  ></label>
+                </li>
+                <li>
+                  <label class="checkbox-inline" for="1"
+                    ><input
+                      class="clickable"
+                      (click)="onSelectCategory('acousticCategory')"
+                      type="checkbox" />
+                    Acoustic guitars<span class="count"></span
+                  ></label>
+                </li>
+                <li>
+                  <label class="checkbox-inline" for="1"
+                    ><input
+                      class="clickable"
+                      (click)="onSelectCategory('amplifiersCategory')"
+                      type="checkbox" />
+                    Amplifiers<span class="count"></span
+                  ></label>
+                </li>
+              </ul>
+            </ul>
+          </div>
+          <!--/ End Single Widget -->
+          <!-- Shop By Price -->
+          <div class="single-widget range">
+            <h3 class="title">Shop by Price</h3>
+            <ngx-slider (userChange)="onSearchByPrice()" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
+
+            <ul class="check-box-list">
+              <li>
+                <label class="checkbox-inline" for="2"
+                  ><input name="news" id="2" type="checkbox" class ="clickable" />On sale only<span
+                    class="count"
+                    >(5)</span
+                  ></label
+                >
+              </li>
+            </ul>
+          </div>
+          <!--/ End Shop By Price -->
+
+          <ul>
+            <li>
+              <button class="btn margin-top" (click)="clearFilters()">
+                Clear filters
+              </button>
+            </li>
+          </ul>
+
+          <!--/ End Single Widget -->
+          <!-- Single Widget -->
+          <div class="single-widget category">
+            <h3 class="title">Manufacturers</h3>
+            <ul class="categor-list">
+              <li><a href="#">Forever</a></li>
+              <li><a href="#">giordano</a></li>
+              <li><a href="#">abercrombie</a></li>
+              <li><a href="#">ecko united</a></li>
+              <li><a href="#">zara</a></li>
+            </ul>
+          </div>
+          <!--/ End Single Widget -->
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-8 col-12">
+        <div class="row">
+          <div class="col-12">
+            <!-- Shop Top -->
+            <div>
+              <p
+                class="info-text mat-body-1"
+                *ngIf="products.length <= 0 && !isLoading"
+              >
+                No products found.
+              </p>
+
+              <ul class="paginator">
+                <li>
+                  <mat-paginator
+                    [length]="totalProducts"
+                    [pageSize]="productsPerPage"
+                    [pageSizeOptions]="productsPerPageOptions"
+                    (page)="onChangePage($event)"
+                    *ngIf="products.length > 0"
+                  >
+                  </mat-paginator>
+                </li>
+              </ul>
+            </div>
+            <!--/ End Shop Top -->
+          </div>
+        </div>
+        <div class="row">
+          <!-- Single product -->
+          <div
+            class="col-lg-4 col-md-6 col-12"
+            *ngFor="let product of products"
+          >
+            <div class="single-product">
+              <div class="product-img">
+                <a routerLink="/product/{{ product.id }}">
+                  <div class="default-image">
+                    <img [src]="product.imagePath" [alt]="product.title" />
+                  </div>
+                  <img class="hover-img" />
+                </a>
+                <div class="button-head">
+                  <div class="product-action">
+                    <a
+                      data-toggle="modal"
+                      data-target="#exampleModal"
+                      title="View product"
+                      routerLink="/product/{{ product.id }}"
+                      ><i class="ti-eye"></i><span >View product</span></a
+                    >
+                    <a title="Wishlist" href="#"
+                      ><i class="ti-heart"></i><span>Add to Wishlist</span></a
+                    >
+                    <a title="Compare" href="#"
+                      ><i class="ti-bar-chart-alt"></i
+                      ><span>Add to Compare</span></a
+                    >
+                  </div>
+                  <div class="product-action-2">
+                    <a *ngIf="product.stock > 0" title="Add to cart" (click)="onAddToCart(product.id,product.title,product.imagePath, product.currentProdPrice, product.beforeDiscountPrice)">Add to cart</a>
+                    <a class="cursor-block" *ngIf="product.stock < 1" title="Add to cart">Out of stock</a>
+
+                  </div>
+                </div>
+              </div>
+              <div class="product-content">
+                <h3>
+                  <a>{{ product.title }}</a>
+                </h3>
+              </div>
+              <div>
+                <span>{{ product.content }}</span>
+              </div>
+              <div
+                class="product-price"
+                *ngIf="product.beforeDiscountPrice != null"
+              >
+                <div class="product-content">
+                  <span class="new-discount"
+                    >{{
+                      (
+                        100 -
+                        (product.currentProdPrice * 100) / product.beforeDiscountPrice
+                      ).toFixed(0)
+                    }}% Off</span
+                  >
+                  <div class="price-before-discount">
+                    <span>€{{ product.beforeDiscountPrice.toFixed(2) }}</span>
+                  </div>
+                  <div>
+                    <span>€{{ product.currentProdPrice.toFixed(2) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="product-price"
+                *ngIf="product.beforeDiscountPrice == null"
+              >
+                <div class="product-content">
+                  <div>
+                    <span>€{{ product.currentProdPrice.toFixed(2) }}</span>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+                </div>
+              </div>
+
+              <mat-action-row
+                *ngIf="userIsAuthenticated && currentUserId == product.creator"
+              >
+                <a class="btn btn-primary" [routerLink]="['/edit', product.id]"
+                  >Edit</a
+                >
+                <button
+                  class="btn"
+                  mat-button
+                  color="warn"
+                  (click)="onDelete(product.id)"
+                >
+                  Delete
+                </button>
+              </mat-action-row>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <!-- Shop Top -->
+            <div>
+              <ul class="paginator">
+                <li>
+                  <mat-paginator
+                    [length]="totalProducts"
+                    [pageSize]="productsPerPage"
+                    [pageSizeOptions]="productsPerPageOptions"
+                    (page)="onChangePage($event)"
+                    *ngIf="products.length > 0"
+                  >
+                  </mat-paginator>
+                </li>
+              </ul>
+            </div>
+            <!--/ End Shop Top -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ End Product Style 1  -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span class="ti-close" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal end -->

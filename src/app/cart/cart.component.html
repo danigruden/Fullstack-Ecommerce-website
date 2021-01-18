@@ -1,0 +1,84 @@
+<!-- Shopping Cart -->
+<div class="shopping-cart section" *ngIf="numInCart !== 0" >
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <!-- Shopping Summery -->
+        <table class="table shopping-summery">
+          <thead>
+            <tr class="main-hading">
+              <th>PRODUCT</th>
+              <th>NAME</th>
+              <th class="text-center">UNIT PRICE</th>
+              <th class="text-center">QUANTITY</th>
+              <th class="text-center">TOTAL</th>
+              <th class="text-center"><i class="ti-trash remove-icon"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of inCart">
+              <td class="image clickable" data-title="No"  routerLink="/product/{{item.id}}"><img [src]="item.imagePath" alt="#"></td>
+              <td class="product-des" data-title="Description">
+                <p class="product-name"><a  routerLink="/product/{{item.id}}">{{item.title}}</a></p>
+                <p class="product-des">Maboriosam in a tonto nesciung eget  distingy magndapibus.</p>
+              </td>
+              <td class="price" data-title="Price"><span>€{{ item.currentPrice.toFixed(2) }}</span></td>
+              <td class="qty" data-title="Qty"><!-- Input Order -->
+                <div class="input-group">
+                  <div class="button minus">
+                    <button type="button" class="btn btn-primary btn-number" data-type="minus" (click)="onRemoveOneFromCart(item.id)">
+                      <i class="ti-minus"></i>
+                    </button>
+                  </div>
+                  <input type="text" name="quant[1]" class="input-number"  data-min="1" data-max="1000" value="{{item.quantity}}">
+                  <div class="button plus">
+                    <button type="button" class="btn btn-primary btn-number" data-type="plus" (click)="onAddOneToCart(item.id,item.title,item.imagePath, item.currentPrice, item.currentPrice)">
+                      <i class="ti-plus"></i>
+                    </button>
+                  </div>
+                </div>
+                <!--/ End Input Order -->
+              </td>
+              <td class="total-amount" data-title="Total"><span>€{{(item.quantity * item.currentPrice).toFixed(2) }}</span></td>
+              <td class="action clickable" data-title="Remove"><a (click)="onDeleteFromCart(item.id)" ><i class="ti-trash remove-icon"></i></a></td>
+            </tr>
+
+          </tbody>
+        </table>
+        <!--/ End Shopping Summery -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <!-- Total Amount -->
+        <div class="total-amount">
+          <div class="row">
+            <div class="col-lg-8 col-md-5 col-12">
+              <div class="left">
+                <a routerLink="/" class="btn">Continue shopping</a>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-7 col-12">
+              <div class="right">
+                <ul>
+                  <li class="last">Cart Subtotal<span>€{{ cartTotal.toFixed(2) }}</span></li>
+                </ul>
+                <div class="button5">
+                  <a routerLink="/checkout" class="btn">Checkout</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/ End Total Amount -->
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ End Shopping Cart -->
+
+<div class="marge-preset"  *ngIf="numInCart == 0">
+
+  <h2>Your cart is empty!</h2>
+<button class="btn" routerLink="/">Back to shop</button>
+</div>

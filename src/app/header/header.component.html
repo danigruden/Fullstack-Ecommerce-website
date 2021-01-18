@@ -1,0 +1,239 @@
+<!-- Header -->
+<header class="header shop">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-12 col-12">
+          <!-- Top Left -->
+          <div class="top-left">
+            <ul class="list-main">
+              <li><i class="ti-headphone-alt"></i> +041 456 789</li>
+              <li><i class="ti-email"></i> email@support.com</li>
+            </ul>
+          </div>
+          <!--/ End Top Left -->
+        </div>
+        <div class="col-lg-8 col-md-12 col-12">
+          <!-- Top Right -->
+          <div class="right-content">
+            <ul class="list-main">
+              <li><i class="ti-location-pin"></i> Store location</li>
+              <li>
+                <i class="ti-user clickable" routerLink="/profile"></i>
+                <a
+                  *ngIf="userIsAuthenticated"
+                  routerLink="/profile"
+                  class="clickable"
+                >
+                  Logged in as {{ currentUserEmail }}</a
+                >
+                <a
+                  routerLink="/signup"
+                  routerLinkActive="mat-accent"
+                  *ngIf="!userIsAuthenticated"
+                  >Sign up</a
+                >
+              </li>
+              <li>
+                <i class="ti-power-off"></i
+                ><a
+                  class="button-header"
+                  (click)="onLogout()"
+                  *ngIf="userIsAuthenticated"
+                >
+                  Logout</a
+                >
+
+                <a routerLink="/login" *ngIf="!userIsAuthenticated">Login</a>
+              </li>
+            </ul>
+          </div>
+          <!-- End Top Right -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Topbar -->
+  <div class="middle-inner">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2 col-md-2 col-12">
+          <!-- Logo -->
+          <div class="logo">
+            <a href="index.html"
+              ><img src="/assets/images/logo.png" alt="logo"
+            /></a>
+          </div>
+          <!--/ End Logo -->
+
+          <!--/ End Search Form -->
+          <div class="mobile-nav"></div>
+        </div>
+        <div class="col-lg-8 col-md-7 col-12">
+          <div class="search-bar-top">
+            <div class="search-bar">
+              <form>
+                <input
+                  class="input-keyword"
+                  placeholder="Search..."
+                  name="headerSearch"
+                  [(ngModel)]="keywordHeader"
+                  (keyup)="searchByKeywordHeader(keywordHeader)"
+                />
+                <button
+                  class="btnn"
+                  routerLink="/"
+                  (click)="searchByKeywordHeader(keywordHeader)"
+                >
+                  <i class="ti-search"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-12">
+          <div class="right-bar">
+            <!-- Search Form -->
+            <div class="sinlge-bar">
+              <a href="#" class="single-icon"
+                ><i class="fa fa-heart-o" aria-hidden="true"></i
+              ></a>
+            </div>
+            <div class="sinlge-bar">
+              <a href="#" class="single-icon"
+                ><i class="fa fa-user-circle-o" aria-hidden="true"></i
+              ></a>
+            </div>
+            <div class="sinlge-bar shopping">
+              <a routerLink="/cart" class="single-icon"
+                ><i class="ti-bag"></i>
+                <span *ngIf="numInCart != null" class="total-count">{{
+                  numInCart
+                }}</span></a
+              >
+              <!-- Shopping Item -->
+              <div class="shopping-item">
+                <div class="dropdown-cart-header">
+                  <span>{{ numInCart }} items in cart</span>
+                  <a (click)="onClearCart()" class="clickable">Clear Cart</a>
+                </div>
+                <ul class="shopping-list" *ngFor="let item of inHeaderCart">
+                  <li>
+                    <a
+                      (click)="onDeleteFromCart(item.id)"
+                      class="remove"
+                      title="Remove this item"
+                      ><i class="fa fa-remove"></i
+                    ></a>
+                    <a class="cart-img clickable"
+                      ><img
+                        [src]="item.imagePath"
+                        alt="item.title"
+                        routerLink="/product/{{ item.id }}"
+                    /></a>
+                    <h4>
+                      <a routerLink="/product/{{ item.id }}">{{
+                        item.title
+                      }}</a>
+                    </h4>
+                    <p class="quantity">
+                      {{ item.quantity }}x -
+                      <span class="amount"
+                        >€{{ item.currentPrice.toFixed(2) }}</span
+                      >
+                    </p>
+                  </li>
+                </ul>
+
+                <div class="bottom">
+                  <div class="total">
+                    <span>Total</span>
+                    <span class="total-amount"
+                      >€{{ headerCartTotal.toFixed(2) }}</span
+                    >
+                  </div>
+                  <a routerLink="/checkout" class="btn animate">Checkout</a>
+                </div>
+              </div>
+              <!--/ End Shopping Item -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Header Inner -->
+  <div class="header-inner">
+    <div class="container">
+      <div class="cat-nav-head">
+        <div class="row">
+          <div class="col-12">
+            <div class="menu-area">
+              <!-- Main Menu -->
+              <nav class="navbar navbar-expand-lg">
+                <div class="navbar-collapse">
+                  <div class="nav-inner">
+                    <ul class="nav main-menu menu navbar-nav">
+                      <li>
+                        <a routerLink="/" routerLinkActive="is-active">Home</a>
+                      </li>
+                      <li>
+                        <a routerLink="/cart" routerLinkActive="is-active"
+                          >Cart</a
+                        >
+                      </li>
+                      <li>
+                        <a routerLink="/checkout" routerLinkActive="is-active"
+                          >Checkout</a
+                        >
+                      </li>
+                      <li><a>Contact Us</a></li>
+                      <li>
+                        <a
+                          routerLink="/profile"
+                          routerLinkActive="is-active"
+                          *ngIf="userIsAuthenticated"
+                          >My profile</a
+                        >
+                      </li>
+                      <li *ngIf="currentUserType === 'admin'" class="admin-nav">
+                        <a>Admin navigation<i class="ti-angle-down"></i></a>
+                        <ul class="dropdown">
+                          <li class="clickable">
+                            <a
+                              (click)="onEnterAdmin('/create')"
+                              routerLinkActive="is-active"
+                              >Add product</a
+                            >
+                          </li>
+                          <li class="clickable">
+                            <a
+                              (click)="onEnterAdmin('/orderManagement')"
+                              routerLinkActive="is-active"
+                              >Order management</a
+                            >
+                          </li>
+                          <li class="clickable">
+                            <a
+                              (click)="onEnterAdmin('/analytics')"
+                              routerLinkActive="is-active"
+                              >Analytics</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+              <!--/ End Main Menu -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ End Header Inner -->
+</header>
+<!--/ End Header -->
