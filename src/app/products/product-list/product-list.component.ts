@@ -7,6 +7,7 @@ import { CartService } from 'src/app/cart/cart.service';
 import { ProductFilterService } from '../product-filter.service';
 import { Product } from '../product.model';
 import { ProductsService } from '../products.service';
+import { debounce } from 'ts-debounce';
 
 @Component({
   selector: 'app-product-list',
@@ -35,8 +36,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   electricCategory = false;
   amplifiersCategory = false;
   componenentSettingsInitialized = false;
-  componenentFullyInitialized = false;
 
+  debouncedTest = debounce(this.onSearchByPrice, 200);
 
   maxPrice = 0;
   minPrice = 0;
@@ -76,21 +77,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productSub = this.productsService
       .getProductUpdateListener()
       .subscribe(
-        (productData: { products: Product[]; productCount: number, maxPrice: number, minPrice: number }) => {
-
+        (productData: {
+          products: Product[];
+          productCount: number;
+          maxPrice: number;
+          minPrice: number;
+        }) => {
           this.products = productData.products;
           this.totalProducts = productData.productCount;
 
-          if(!this.componenentSettingsInitialized){
-          this.maxPrice = Number((productData.maxPrice+1).toFixed(0));
+          if (!this.componenentSettingsInitialized) {
+            this.maxPrice = Number((productData.maxPrice + 1).toFixed(0));
 
-          this.maxValue = this.maxPrice;
+            this.maxValue = this.maxPrice;
 
-          this.options = {
-            floor: 0,
-            ceil: this.maxPrice,
+            this.options = {
+              floor: 0,
+              ceil: this.maxPrice,
+            };
           }
-        }
           this.componenentSettingsInitialized = true;
           this.isLoading = false;
         }
@@ -102,23 +107,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.userIsAuthenticated = isAuthenticated;
         this.currentUserId = this.authService.getUserId();
       });
-
   }
 
   onAddToCart(
     prodId: string,
     prodTitle: string,
     imgPath: string,
-    currentProdPrice: number,
-    discountPrice: number
+    currentProdPrice: number
   ) {
-    this.cartService.addToCart(
-      prodId,
-      prodTitle,
-      imgPath,
-      currentProdPrice,
-      discountPrice
-    );
+    this.cartService.addToCart(prodId, prodTitle, imgPath, currentProdPrice);
   }
 
   onChangePage(pageEvent: PageEvent) {
@@ -187,14 +184,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.searchWithFilters();
   }
 
+  debounce<Params extends any[]>(
+    func: (...args: Params) => any,
+    timeout: number
+  ): (...args: Params) => void {
+    let timer: NodeJS.Timeout;
+    return (...args: Params) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func(...args);
+      }, timeout);
+    };
+  }
+
   onSearchByPrice() {
     this.selectedPriceQuery = `&priceSearchMin=${this.minValue}&priceSearchMax=${this.maxValue}`;
-    if(this.componenentFullyInitialized){
-      console.log("maxprice"+this.maxPrice);
-      console.log("maxvalue"+this.maxValue);
-      this.searchWithFilters();
-    }
-    this.componenentFullyInitialized = true;
+    console.log('maxprice' + this.maxPrice);
+    console.log('maxvalue' + this.maxValue);
+    this.searchWithFilters();
   }
 
   onSearchByKeyword() {
@@ -203,7 +210,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.searchWithFilters();
   }
 
-  searchWithFilters(){
+  searchWithFilters() {
     this.productsService.getProducts(
       this.productsPerPage,
       this.currentPage,

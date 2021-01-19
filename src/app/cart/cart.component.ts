@@ -44,8 +44,8 @@ export class CartComponent implements OnInit, OnDestroy{
 
   }
 
-  onAddOneToCart(prodId: string,title: string, imgPath: string, regularPrice: number, discountPrice: number){
-    this.cartService.addToCart(prodId,title,imgPath,regularPrice, discountPrice);
+  onAddOneToCart(prodId: string,title: string, imgPath: string, currentProdPrice: number){
+    this.cartService.addToCart(prodId,title,imgPath,currentProdPrice);
   }
 
   onRemoveOneFromCart(prodId){

@@ -46,8 +46,7 @@ export class CartService {
     prodId: string,
     prodTitle: string,
     imgPath: string,
-    regularPrice: number,
-    discountPrice: number
+    currentProdPrice: number,
   ) {
     let alreadyInCart = false;
     this.inCart = JSON.parse(localStorage.getItem('cartItems'));
@@ -56,11 +55,7 @@ export class CartService {
       this.inCart = [];
     }
     let currentPrice;
-    if (discountPrice !== null && discountPrice !== undefined) {
-      currentPrice = discountPrice;
-    } else {
-      currentPrice = regularPrice;
-    }
+      currentPrice = currentProdPrice;
     this.inCart.findIndex((value, index) => {
       if (value.id == prodId) {
         if (alreadyInCart == false) {

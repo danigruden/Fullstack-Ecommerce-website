@@ -11,11 +11,13 @@ const BACKEND_URL = environment.apiUrl + '/orders';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
+  /*
   private order: Order[] = [];
   private ordersUpdated = new Subject<{
     products: Order[];
     productCount: number;
   }>();
+*/
 
   constructor(
     private http: HttpClient,

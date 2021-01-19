@@ -34,11 +34,7 @@ export class CheckoutComponent implements OnInit {
           let obj = {};
           let quantity;
           let currentPrice;
-          if(element.discountedPrice !== null && element.discountedPrice !== undefined && element.discountedPrice !== ""){
-            currentPrice = element.discountedPrice;
-          }else{
-            currentPrice = element.currentProdPrice;
-          }
+          currentPrice = element.currentProdPrice;
           this.inCart.findIndex((value, index) => {
             if (value.id == element._id) {
               quantity = this.inCart[index].quantity.toFixed();

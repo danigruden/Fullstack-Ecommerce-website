@@ -37,7 +37,7 @@ export class AnalyticsComponent implements OnInit {
               if (
                 dateToPush.getFullYear() == orderDates[i].getFullYear() &&
                 dateToPush.getMonth() == orderDates[i].getMonth() &&
-                dateToPush.getDay() == orderDates[i].getDay()
+                dateToPush.getDate() == orderDates[i].getDate()
               ) {
                 orderTotals[i] = orderTotals[i] + order.total;
                 pushThis = false;

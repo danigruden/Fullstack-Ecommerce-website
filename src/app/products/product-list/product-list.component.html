@@ -64,7 +64,7 @@
           <!-- Shop By Price -->
           <div class="single-widget range">
             <h3 class="title">Shop by Price</h3>
-            <ngx-slider (userChange)="onSearchByPrice()" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
+            <ngx-slider (userChange)="debouncedTest()" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
 
             <ul class="check-box-list">
               <li>
@@ -162,7 +162,7 @@
                     >
                   </div>
                   <div class="product-action-2">
-                    <a *ngIf="product.stock > 0" title="Add to cart" (click)="onAddToCart(product.id,product.title,product.imagePath, product.currentProdPrice, product.beforeDiscountPrice)">Add to cart</a>
+                    <a *ngIf="product.stock > 0" title="Add to cart" (click)="onAddToCart(product.id,product.title,product.imagePath, product.currentProdPrice)">Add to cart</a>
                     <a class="cursor-block" *ngIf="product.stock < 1" title="Add to cart">Out of stock</a>
 
                   </div>
