@@ -13,7 +13,7 @@
     <div class="row">
       <div class="col-lg-3 col-md-4 col-12">
         <div class="shop-sidebar">
-          <div class="single-widget category" style="margin-top: 2.5rem;">
+          <div class="single-widget category" style="margin-top: 2.5rem">
             <h3 class="title">Search</h3>
             <ul class="category-list">
               <li>
@@ -30,33 +30,24 @@
             <h3 class="title">Categories</h3>
             <ul class="category-list">
               <ul class="check-box-list">
-                <li>
-                  <label class="checkbox-inline" for="1"
-                    ><input
-                      class="clickable"
-                      (change)="onSelectCategory('electricCategory')"
-                      type="checkbox" />
-                    Electric guitars<span class="count"></span
-                  ></label>
-                </li>
-                <li>
-                  <label class="checkbox-inline" for="1"
-                    ><input
-                      class="clickable"
-                      (click)="onSelectCategory('acousticCategory')"
-                      type="checkbox" />
-                    Acoustic guitars<span class="count"></span
-                  ></label>
-                </li>
-                <li>
-                  <label class="checkbox-inline" for="1"
-                    ><input
-                      class="clickable"
-                      (click)="onSelectCategory('amplifiersCategory')"
-                      type="checkbox" />
-                    Amplifiers<span class="count"></span
-                  ></label>
-                </li>
+                <mat-checkbox
+                  [(ngModel)]="productfilterService.electricCategory"
+                  (change)="onSelectCategory()"
+                  class="count"
+                  >Electric guitars</mat-checkbox
+                >
+                <mat-checkbox
+                  [(ngModel)]="productfilterService.acousticCategory"
+                  (change)="onSelectCategory()"
+                  class="count"
+                  >Acoustic guitars</mat-checkbox
+                >
+                <mat-checkbox
+                  [(ngModel)]="productfilterService.amplifiersCategory"
+                  (change)="onSelectCategory()"
+                  class="count"
+                  >Amplifiers</mat-checkbox
+                >
               </ul>
             </ul>
           </div>
@@ -64,15 +55,22 @@
           <!-- Shop By Price -->
           <div class="single-widget range">
             <h3 class="title">Shop by Price</h3>
-            <ngx-slider (userChange)="debouncedTest()" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
+            <ngx-slider
+              (userChange)="debouncedSearch()"
+              [(value)]="minValue"
+              [(highValue)]="maxValue"
+              [options]="options"
+            ></ngx-slider>
 
             <ul class="check-box-list">
               <li>
                 <label class="checkbox-inline" for="2"
-                  ><input name="news" id="2" type="checkbox" class ="clickable" />On sale only<span
-                    class="count"
-                    >(5)</span
-                  ></label
+                  ><input
+                    name="news"
+                    id="2"
+                    type="checkbox"
+                    class="clickable"
+                  />On sale only<span class="count">(5)</span></label
                 >
               </li>
             </ul>
@@ -113,19 +111,6 @@
               >
                 No products found.
               </p>
-
-              <ul class="paginator">
-                <li>
-                  <mat-paginator
-                    [length]="totalProducts"
-                    [pageSize]="productsPerPage"
-                    [pageSizeOptions]="productsPerPageOptions"
-                    (page)="onChangePage($event)"
-                    *ngIf="products.length > 0"
-                  >
-                  </mat-paginator>
-                </li>
-              </ul>
             </div>
             <!--/ End Shop Top -->
           </div>
@@ -151,7 +136,7 @@
                       data-target="#exampleModal"
                       title="View product"
                       routerLink="/product/{{ product.id }}"
-                      ><i class="ti-eye"></i><span >View product</span></a
+                      ><i class="ti-eye"></i><span>View product</span></a
                     >
                     <a title="Wishlist" href="#"
                       ><i class="ti-heart"></i><span>Add to Wishlist</span></a
@@ -162,9 +147,25 @@
                     >
                   </div>
                   <div class="product-action-2">
-                    <a *ngIf="product.stock > 0" title="Add to cart" (click)="onAddToCart(product.id,product.title,product.imagePath, product.currentProdPrice)">Add to cart</a>
-                    <a class="cursor-block" *ngIf="product.stock < 1" title="Add to cart">Out of stock</a>
-
+                    <a
+                      *ngIf="product.stock > 0"
+                      title="Add to cart"
+                      (click)="
+                        onAddToCart(
+                          product.id,
+                          product.title,
+                          product.imagePath,
+                          product.currentProdPrice
+                        )
+                      "
+                      >Add to cart</a
+                    >
+                    <a
+                      class="cursor-block"
+                      *ngIf="product.stock < 1"
+                      title="Add to cart"
+                      >Out of stock</a
+                    >
                   </div>
                 </div>
               </div>
@@ -185,7 +186,8 @@
                     >{{
                       (
                         100 -
-                        (product.currentProdPrice * 100) / product.beforeDiscountPrice
+                        (product.currentProdPrice * 100) /
+                          product.beforeDiscountPrice
                       ).toFixed(0)
                     }}% Off</span
                   >

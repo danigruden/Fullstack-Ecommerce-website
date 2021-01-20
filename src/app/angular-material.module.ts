@@ -10,6 +10,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @NgModule({
   exports:[
@@ -23,7 +25,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatPaginatorModule,
     MatSelectModule,
     MatSliderModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule
   ]
 })
 export class AngularMaterialModule {}

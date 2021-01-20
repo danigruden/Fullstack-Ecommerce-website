@@ -4,6 +4,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { CartService } from "../cart/cart.service";
 import { ProductFilterService } from "../products/product-filter.service";
+import { ProductListComponent } from "../products/product-list/product-list.component";
 
 @Component({
   selector: 'app-header',
@@ -94,6 +95,13 @@ export class HeaderComponent implements OnInit, OnDestroy{
   }
 
   searchByKeywordHeader(headerKeyword: string){
+    if(this.router.url !== "/"){
+      this.productfilterService.setSearchedPriceRange(0, null);
+      this.productfilterService.electricCategory = false;
+      this.productfilterService.acousticCategory = false;
+      this.productfilterService.amplifiersCategory = false;
+      this.productfilterService.setCategories(null);
+    }
     this.productfilterService.theKeyword(headerKeyword);
   }
 

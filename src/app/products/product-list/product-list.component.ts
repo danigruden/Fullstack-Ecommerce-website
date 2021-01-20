@@ -32,26 +32,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
   keywordInInput = '';
   selectedKeywordQuery = '&keywordSearch=';
   selectedPriceQuery = '&priceSearchMin=0&priceSearchMax=null';
-  acousticCategory = false;
-  electricCategory = false;
-  amplifiersCategory = false;
   componenentSettingsInitialized = false;
+  searchedSettingsSet = true;
 
-  debouncedTest = debounce(this.onSearchByPrice, 200);
+  debouncedSearch = debounce(this.onSearchByPrice, 200);
 
-  maxPrice = 0;
   minPrice = 0;
+  maxPrice = 0;
   minValue: number = 0;
   maxValue: number = 0;
   options: Options = {
     floor: 0,
-    ceil: this.maxPrice,
+    ceil: 9999999999999,
   };
 
   constructor(
     public productsService: ProductsService,
     private authService: AuthService,
-    private productfilterService: ProductFilterService,
+    public productfilterService: ProductFilterService,
     private cartService: CartService
   ) {}
 
@@ -65,13 +63,31 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.onSearchByKeyword();
       });
 
-    this.keywordInInput = this.productfilterService.getKeyword();
-    if (this.keywordInInput !== null) {
-      this.onSearchByKeyword();
-    } else {
-      this.keywordInInput = '';
+    if (this.productfilterService.getCategories() !== null) {
+      this.searchedSettingsSet = false;
+      this.selectedCategoriesQuery = this.productfilterService.getCategories();
+      console.log(this.selectedCategoriesQuery);
+    }
+
+    if (
+      this.productfilterService.getSearchedPriceRange()[0] !== 0 ||
+      this.productfilterService.getSearchedPriceRange()[1] !== null
+    ) {
+      //this.selectedPriceQuery = this.productfilterService.getSearchedPriceRange();
+      this.searchedSettingsSet = false;
+      this.minValue = this.productfilterService.getSearchedPriceRange()[0];
+      this.maxValue = this.productfilterService.getSearchedPriceRange()[1];
+      this.onSearchByPrice();
+      console.log(this.productfilterService.getSearchedPriceRange()[1]);
+    }
+
+    if (this.productfilterService.getKeyword() !== null) {
+      this.searchedSettingsSet = false;
+      this.keywordInInput = this.productfilterService.getKeyword();
       this.onSearchByKeyword();
     }
+
+    this.searchWithFilters();
 
     this.currentUserId = this.authService.getUserId();
     this.productSub = this.productsService
@@ -89,7 +105,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
           if (!this.componenentSettingsInitialized) {
             this.maxPrice = Number((productData.maxPrice + 1).toFixed(0));
 
-            this.maxValue = this.maxPrice;
+            if (this.searchedSettingsSet) {
+              this.maxValue = this.maxPrice;
+            } else if (
+              this.productfilterService.getSearchedPriceRange()[1] == null
+            ) {
+              this.maxValue = this.maxPrice;
+            }
 
             this.options = {
               floor: 0,
@@ -97,6 +119,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
             };
           }
           this.componenentSettingsInitialized = true;
+          this.searchedSettingsSet = true;
           this.isLoading = false;
         }
       );
@@ -136,52 +159,29 @@ export class ProductListComponent implements OnInit, OnDestroy {
     );
   }
 
-  onSelectCategory(category: string) {
-    let stringReplace = '';
-
-    if (category == 'electricCategory') {
-      if (this.electricCategory == false) {
-        this.electricCategory = true;
-        stringReplace =
-          this.selectedCategoriesQuery + '&category=electricGuitars';
-      } else {
-        this.electricCategory = false;
-        stringReplace = this.selectedCategoriesQuery.replace(
-          '&category=electricGuitars',
-          ''
-        );
-      }
+  onSelectCategory() {
+    let searchCategoriesQuery;
+    if (this.productfilterService.electricCategory) {
+      searchCategoriesQuery =
+        searchCategoriesQuery + '&category=electricGuitars';
     }
-
-    if (category == 'acousticCategory') {
-      if (this.acousticCategory == false) {
-        this.acousticCategory = true;
-        stringReplace =
-          this.selectedCategoriesQuery + '&category=acousticGuitars';
-      } else {
-        this.acousticCategory = false;
-        stringReplace = this.selectedCategoriesQuery.replace(
-          '&category=acousticGuitars',
-          ''
-        );
-      }
+    if (this.productfilterService.acousticCategory) {
+      searchCategoriesQuery =
+        searchCategoriesQuery + '&category=acousticGuitars';
     }
-
-    if (category == 'amplifiersCategory') {
-      if (this.amplifiersCategory == false) {
-        this.amplifiersCategory = true;
-        stringReplace = this.selectedCategoriesQuery + '&category=amplifiers';
-      } else {
-        this.amplifiersCategory = false;
-        stringReplace = this.selectedCategoriesQuery.replace(
-          '&category=amplifiers',
-          ''
-        );
-      }
+    if (this.productfilterService.amplifiersCategory) {
+      searchCategoriesQuery = searchCategoriesQuery + '&category=amplifiers';
     }
-
-    this.selectedCategoriesQuery = stringReplace;
+    this.selectedCategoriesQuery = searchCategoriesQuery;
+    this.productfilterService.setCategories(searchCategoriesQuery);
     this.searchWithFilters();
+  }
+  onSearchByKeyword() {
+    this.selectedKeywordQuery = `&keywordSearch=${this.keywordInInput}`;
+    if (this.searchedSettingsSet) {
+      this.productfilterService.setKeyword(this.keywordInInput);
+      this.searchWithFilters();
+    }
   }
 
   debounce<Params extends any[]>(
@@ -199,15 +199,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   onSearchByPrice() {
     this.selectedPriceQuery = `&priceSearchMin=${this.minValue}&priceSearchMax=${this.maxValue}`;
-    console.log('maxprice' + this.maxPrice);
-    console.log('maxvalue' + this.maxValue);
-    this.searchWithFilters();
-  }
-
-  onSearchByKeyword() {
-    this.selectedKeywordQuery = `&keywordSearch=${this.keywordInInput}`;
-    this.productfilterService.setKeyword(this.keywordInInput);
-    this.searchWithFilters();
+    if (this.searchedSettingsSet) {
+      this.productfilterService.setSearchedPriceRange(
+        this.minValue,
+        this.maxValue
+      );
+      this.searchWithFilters();
+    }
   }
 
   searchWithFilters() {
@@ -221,7 +219,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
+    this.searchedSettingsSet = false;
     this.productfilterService.theKeyword('');
+    this.productfilterService.setSearchedPriceRange(0, null);
+    this.selectedKeywordQuery = '&keywordSearch=';
+    this.selectedPriceQuery = '&priceSearchMin=0&priceSearchMax=null';
+    this.minValue = this.minPrice;
+    this.maxValue = this.maxPrice;
+    this.productfilterService.electricCategory = false;
+    this.productfilterService.acousticCategory = false;
+    this.productfilterService.amplifiersCategory = false;
+    this.productfilterService.setCategories(null)
+    this.selectedCategoriesQuery = '';
+    this.searchedSettingsSet = true;
+    this.searchWithFilters();
   }
 
   ngOnDestroy() {
