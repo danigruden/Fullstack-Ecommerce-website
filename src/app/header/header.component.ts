@@ -35,15 +35,16 @@ export class HeaderComponent implements OnInit, OnDestroy{
     this.authListenerSub = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
       this.userIsAuthenticated = isAuthenticated;
       this.currentUserEmail = this.authService.getUserEmail();
+      this.currentUserType = this.authService.getUserType();
       if(this.userIsAuthenticated){
         this.authService.getUserType().subscribe(response => {
           this.currentUserType = response.userType;
         });
-      }
-      else{
+      }else{
         this.currentUserType="unauthenticated";
       }
-    });
+
+   });
 
     if(this.userIsAuthenticated){
       this.authService.getUserType().subscribe(response => {

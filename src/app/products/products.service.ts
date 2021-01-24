@@ -101,8 +101,6 @@ export class ProductsService {
       productData.append('category', category);
     } else {
       if(discountedPrice == 0 || discountedPrice == null){
-        console.log("discount is null")
-
       productData = {
         id: id,
         title: title,
@@ -115,8 +113,6 @@ export class ProductsService {
         creator: null
       };
     }else{
-      console.log("iwashere")
-      console.log(discountedPrice)
       productData = {
         id: id,
         title: title,
@@ -171,5 +167,10 @@ export class ProductsService {
     }>(BACKEND_URL + `/${id}`);
   }
 
+  getRelatedProducts(prodId: string, prodCategory: string){
+    const queryParams = `?prodId=${prodId}&prodCategory=${prodCategory}`;
+    return this.http
+      .get<{ products: any}>(BACKEND_URL+"/related/products"+queryParams);
+  }
 
 }

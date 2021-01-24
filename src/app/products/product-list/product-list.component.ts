@@ -17,6 +17,7 @@ import { debounce } from 'ts-debounce';
 export class ProductListComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   userIsAuthenticated = false;
+  currentUserType = 'unauthenticated';
 
   private productSub: Subscription;
   private authListenerSub: Subscription;
@@ -129,6 +130,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .subscribe((isAuthenticated) => {
         this.userIsAuthenticated = isAuthenticated;
         this.currentUserId = this.authService.getUserId();
+        if(this.userIsAuthenticated){
+        this.authService.getUserType().subscribe((response) => {
+          this.currentUserType = response.userType;
+        });
+      }
+      });
+    if (this.userIsAuthenticated)
+      this.authService.getUserType().subscribe((response) => {
+        this.currentUserType = response.userType;
       });
   }
 
@@ -220,16 +230,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   clearFilters() {
     this.searchedSettingsSet = false;
-    this.productfilterService.theKeyword('');
-    this.productfilterService.setSearchedPriceRange(0, null);
+    this.productfilterService.clearFilters();
     this.selectedKeywordQuery = '&keywordSearch=';
     this.selectedPriceQuery = '&priceSearchMin=0&priceSearchMax=null';
     this.minValue = this.minPrice;
     this.maxValue = this.maxPrice;
-    this.productfilterService.electricCategory = false;
-    this.productfilterService.acousticCategory = false;
-    this.productfilterService.amplifiersCategory = false;
-    this.productfilterService.setCategories(null)
     this.selectedCategoriesQuery = '';
     this.searchedSettingsSet = true;
     this.searchWithFilters();

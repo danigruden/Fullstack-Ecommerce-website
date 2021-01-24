@@ -12,7 +12,6 @@ const nodemailer = require("nodemailer");
 router.post("", checkAuthentication, (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
   const productsInOrder = req.body.productsOrdered;
-  console.log(productsInOrder);
 
   var date = new Date();
   // Send Email to customer on creating order

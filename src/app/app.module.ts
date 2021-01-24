@@ -17,7 +17,7 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
 import { ErrorComponent } from './error/error.component';
 import { AngularMaterialModule } from './angular-material.module';
-import { SingleProductPageComponent } from './single-product-page/single-product-page.component';
+import { SingleProductPageComponent } from './products/single-product-page/single-product-page.component';
 import { FooterComponent } from './footer/footer.component';
 import { CartComponent } from './cart/cart.component';
 import {ToastrModule} from 'ngx-toastr';

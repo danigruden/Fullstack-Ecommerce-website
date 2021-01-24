@@ -14,6 +14,8 @@ export class SignupComponent implements OnInit, OnDestroy{
   isLoading: boolean = false;
   private authStatusSub : Subscription;
 
+  passwordsNotMatching = false;
+
   ngOnInit(){
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
@@ -24,10 +26,13 @@ export class SignupComponent implements OnInit, OnDestroy{
 
   onSignup(form: NgForm) {
     if (form.valid) {
+      if(form.value.password === form.value.passwordRetype){
       this.isLoading = true;
       this.authService
         .addUser(form.value.email, form.value.password);
-    } else {
+    }else{
+      this.passwordsNotMatching = true;
+    }} else {
       return;
     }
   }

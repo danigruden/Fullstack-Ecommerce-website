@@ -10,7 +10,7 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductCreateComponent } from './products/product-create/product-create.component';
 import { ProductListComponent } from './products/product-list/product-list.component';
-import { SingleProductPageComponent } from './single-product-page/single-product-page.component';
+import { SingleProductPageComponent } from './products/single-product-page/single-product-page.component';
 
 const routes: Routes = [
   {path: '', component: ProductListComponent},

@@ -96,10 +96,7 @@ router.put(
       creator: req.userData.userId,
     });
 
-    Product.updateOne(
-      { _id: req.params.id, creator: req.userData.userId },
-      product
-    )
+    Product.updateOne({ _id: req.params.id }, product)
       .then((result) => {
         if (result.n > 0) {
           res.status(200).json({ message: "Update successful!" });
@@ -146,16 +143,16 @@ router.get("", (req, res, next) => {
   }
 
   //{$lte : Number(req.query.priceSearchMin)}
-  Product.countDocuments().then(numOfAllProdsQuery => {
-    if(numOfAllProdsQuery == 0){
-    res.status(201).json({
-      message: "No products in database!",
-      products: [],
-      maxProducts: 0,
-      maxPrice: 0,
-      minPrice: 0
-    });
-  }
+  Product.countDocuments().then((numOfAllProdsQuery) => {
+    if (numOfAllProdsQuery == 0) {
+      res.status(201).json({
+        message: "No products in database!",
+        products: [],
+        maxProducts: 0,
+        maxPrice: 0,
+        minPrice: 0,
+      });
+    }
     Product.find()
       .sort({ currentProdPrice: "desc" })
       .exec(function (err, response) {
@@ -181,7 +178,7 @@ router.get("", (req, res, next) => {
         products: fetchedProducts,
         maxProducts: count,
         maxPrice: maxPrice,
-        minPrice: minPrice
+        minPrice: minPrice,
       });
     })
     .catch((error) => {
@@ -207,6 +204,74 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
+router.get("/related/products", (req, res, next) => {
+  const prodId = req.query.prodId;
+  const prodCategory = req.query.prodCategory;
+
+  Product.find({'_id': {$ne: prodId}})
+    .then((prods) => {
+      let prodsToReturn = [];
+      prods.forEach(item => {
+        if(item.category == prodCategory){
+          prodsToReturn.push(item);
+        }
+      });
+      if(prodsToReturn.length >= 3){
+        prods = prodsToReturn;
+      }else{
+
+        let arr = prods;
+        let n = 3;
+
+        var randOtherProds = new Array(n),
+          len = arr.length,
+          taken = new Array(len);
+        if (n > len)
+          throw new RangeError("getRandom: more elements taken than available");
+        while (n--) {
+          var x = Math.floor(Math.random() * len);
+          randOtherProds[n] = arr[x in taken ? taken[x] : x];
+          taken[x] = --len in taken ? taken[len] : len;
+        }
+        randOtherProds.forEach(item => {
+          if(item.category !== prodCategory){
+            if(prodsToReturn.length < 3){
+            prodsToReturn.push(item);
+            }
+            else {
+              return prodsToReturn;
+            }
+          }
+        });
+        return prodsToReturn;
+      }
+      let arr = prods;
+      let n = 3;
+
+      var randRelatedProds = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+      if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+      while (n--) {
+        var x = Math.floor(Math.random() * len);
+        randRelatedProds[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+      }
+      return randRelatedProds;
+    })
+    .then((relatedProds) => {
+      res.status(200).json({
+        products: relatedProds,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Fetching related products failed",
+      });
+    });
+});
+
 router.get("/prices/idList", (req, res, next) => {
   let fetchedProducts;
   Product.find({ _id: req.query.id })
@@ -228,7 +293,7 @@ router.delete("/:id", checkAuthentication, (req, res, next) => {
       message: "Authorization failed",
     });
   }
-  Product.deleteOne({ _id: req.params.id, creator: req.userData.userId })
+  Product.deleteOne({ _id: req.params.id })
     .then((result) => {
       if (result.n > 0) {
         res.status(200).json({ message: "Deletion successful!" });

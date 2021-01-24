@@ -49,4 +49,14 @@ export class ProductFilterService {
     return [this.searchedPriceMin,this.searchedPriceMax];
   }
 
+  clearFilters(){
+    this.setSearchedPriceRange(0, null);
+    this.theKeyword('');
+    this.setKeyword('');
+    this.setCategories(null);
+    this.electricCategory = false;
+    this.acousticCategory = false;
+    this.amplifiersCategory = false;
+  }
+
 }

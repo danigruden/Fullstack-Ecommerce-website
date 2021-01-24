@@ -1,0 +1,127 @@
+<div class="preloader" *ngIf="isLoading">
+  <div class="preloader-inner">
+    <div class="preloader-icon">
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+<div class="prod-content">
+<div class="leftimg">
+<div>
+  <img
+  [src]="currentProdData?.imagePath"
+  alt="{{ currentProdData?.title }}"/>
+</div>
+
+  <div
+      class="single-prod-discount"
+      *ngIf="currentProdData?.beforeDiscountPrice != null"
+      >This product is
+      {{
+        (
+          100 -
+          (currentProdData?.currentProdPrice * 100) /
+            currentProdData?.beforeDiscountPrice
+        ).toFixed(0)
+      }}% Off</div>
+
+
+</div>
+<div class="rightprod">
+  <div class="single-product-page-content">
+
+    <button class="btn back-to-shop left-button" routerLink="/">Back to shop</button> <button class="btn back-to-shop right-button" routerLink="/checkout">Checkout</button>
+
+
+    <div class="single-prod-path clickable"><span class="specific"  (click)="onSearchAllProds()">All products / </span>
+      <span class="specific" (click)="onSearchThisCategory()">{{ currProdCategoryString }} / </span>
+    </div>
+    <h2>{{ currentProdData?.title }}</h2>
+    <p>{{ currentProdData?.content }}</p>
+    <h3 class="stock-num" *ngIf="currentProdData?.stock <= 10">Only {{ currentProdData?.stock }} left in stock</h3>
+    <div
+      class="product-price">
+      <div class="product-content">
+        <div class="price-before-discount" *ngIf="currentProdData?.beforeDiscountPrice != null">
+          <span>€{{ currentProdData?.beforeDiscountPrice.toFixed(2) }}</span>
+        </div>
+        <div>
+          <span>€{{ currentProdData?.currentProdPrice.toFixed(2) }}</span>
+        </div>
+        <div class="sppqty"
+          *ngIf="currentProdQtyCart > 0"
+          >
+          <td class="single-product-page-qty" data-title="Qty">
+            <div class="input-group">
+              <div class="button">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-number qty-single"
+                  data-type="minus"
+                  (click)="onRemoveOneFromCart(currentProdData?._id)">
+                  <i class="ti-minus"></i>
+                </button>
+              </div>
+              <input
+                type="number"
+                name="quant[1]"
+                class="qty-number"
+                data-min="1"
+                data-max="1000"
+                [(ngModel)] = "prodQty"
+                (change) ="onSetNewProdQty(currentProdData._id)"
+              />
+              <div class="button">
+                <button
+                  type="button"
+                  [ngClass]="{'cursor-block' : prodQty >= currentProdData?.stock}"
+                  class="btn btn-primary btn-number qty-single"
+                  data-type="plus"
+                  (click)="onAddOneToCart(currentProdData?._id,currentProdData?.title,currentProdData?.imagePath, currentProdData?.currentProdPrice)">
+                  <i class="ti-plus"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+        </div>
+        <div class="sppqty"
+          *ngIf="currentProdQtyCart == 0"
+          >
+          <button class="btn"  (click)="onAddOneToCart(currentProdData?._id,currentProdData?.title,currentProdData?.imagePath, currentProdData?.currentProdPrice)">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<hr class="line-related" style="width:60%;height:2px;border-width:0;color:#f7951d2c;background-color:#f7951d41">
+
+<br>
+
+<h1 class="title-center">Related products</h1>
+<div class="related-prods">
+  <div class="related-prods-flex">
+    <div *ngFor="let relProd of relatedProds">
+      <div class="single-prod-related">
+        <div routerLink="/product/{{relProd._id}}">
+      <h3 class="related-prods-title">{{relProd.title}}</h3>
+      <img
+      [src]="relProd.imagePath"
+      alt="{{ relProd.title }}"/>
+      <div class="price-before-discount" *ngIf="relProd.beforeDiscountPrice != null">
+        <span>€{{ relProd.beforeDiscountPrice.toFixed(2) }}</span>
+      </div>
+      <div>
+        €{{ relProd.currentProdPrice.toFixed(2) }}
+      </div>
+      <div class="price-before-discount" *ngIf="relProd.beforeDiscountPrice == null">
+        <br>
+      </div>
+    </div>
+    </div>
+    <button class="btn related-prods-btn" (click)="onAddOneToCart(relProd._id,relProd.title,relProd.imagePath,relProd.currentProdPrice)">Add to cart</button>
+  </div>
+  </div>
+</div>

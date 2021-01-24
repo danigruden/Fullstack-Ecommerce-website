@@ -4,10 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthData } from './user.model';
 import { Subject } from 'rxjs';
-import { environment} from "../../environments/environment"
+import { environment } from '../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
-
-const BACKEND_URL = environment.apiUrl + "/user";
+const BACKEND_URL = environment.apiUrl + '/user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -19,7 +19,11 @@ export class AuthService {
   private currentUserEmail: string;
   private currentUserType: string;
 
-  constructor(private http: HttpClient, public router: Router) {}
+  constructor(
+    private http: HttpClient,
+    public router: Router,
+    private toastr: ToastrService
+  ) {}
 
   getToken() {
     return this.token;
@@ -46,14 +50,20 @@ export class AuthService {
       email: email,
       password: password,
     };
-    this.http.post<{ email; password }>(
-      BACKEND_URL + '/signup',
-      authData
-    ).subscribe(()=> {
-      this.router.navigate(["/login"]);
-    },error => {
-      this.authStatusListener.next(false);
-    })
+    this.http
+      .post<{ email; password }>(BACKEND_URL + '/signup', authData)
+      .subscribe(
+        () => {
+          this.toastr.success('Account successfully created!', 'Welcome', {
+            timeOut: 3000,
+            positionClass: 'toast-top-full-width',
+          });
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          this.authStatusListener.next(false);
+        }
+      );
   }
 
   loginUser(email: string, password: string) {
@@ -62,36 +72,47 @@ export class AuthService {
       password: password,
     };
     this.http
-      .post<{ token: string; expiresIn: number; userId: string , userEmail:string}>(
-        BACKEND_URL + '/login',
-        authData
-      )
-      .subscribe((response) => {
-        const token = response.token;
-        this.token = token;
-        if (token) {
-          const expiresInDuration = response.expiresIn;
-          this.setAuthTimer(expiresInDuration);
-          this.isAuthenticated = true;
-          this.currentUserId = response.userId;
-          this.currentUserEmail = response.userEmail;
-          this.authStatusListener.next(true);
-          const now = new Date();
-          const expirationDate = new Date(
-            now.getTime() + expiresInDuration * 1000
-          );
-          console.log(expirationDate);
-          this.saveAuthData(token, expirationDate, this.currentUserId, this.currentUserEmail, this.currentUserType);
-          this.router.navigate(['/']);
+      .post<{
+        token: string;
+        expiresIn: number;
+        userId: string;
+        userEmail: string;
+        userType: string
+      }>(BACKEND_URL + '/login', authData)
+      .subscribe(
+        (response) => {
+          const token = response.token;
+          this.token = token;
+          if (token) {
+            const expiresInDuration = response.expiresIn;
+            this.setAuthTimer(expiresInDuration);
+            this.isAuthenticated = true;
+            this.currentUserId = response.userId;
+            this.currentUserEmail = response.userEmail;
+            this.currentUserType = response.userType;
+            this.authStatusListener.next(true);
+            const now = new Date();
+            const expirationDate = new Date(
+              now.getTime() + expiresInDuration * 1000
+            );
+            console.log(expirationDate);
+            this.saveAuthData(
+              token,
+              expirationDate,
+              this.currentUserId,
+              this.currentUserEmail,
+            );
+            this.router.navigate(['/']);
+          }
+        },
+        (error) => {
+          this.authStatusListener.next(false);
         }
-      },error => {
-        this.authStatusListener.next(false);
-      });
+      );
   }
 
   getUserType() {
-    return this.http
-      .get<{ userType: string}>(BACKEND_URL+"/userType");
+    return this.http.get<{ userType: string }>(BACKEND_URL + '/userType');
   }
 
   autoAuthUser() {
@@ -128,7 +149,12 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userId: string, email: string, currentUserType: string) {
+  private saveAuthData(
+    token: string,
+    expirationDate: Date,
+    userId: string,
+    email: string,
+  ) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('currentUserId', userId);

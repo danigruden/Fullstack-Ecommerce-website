@@ -95,6 +95,22 @@ export class CartService {
     localStorage.setItem('cartTotal', this.cartTotal);
   }
 
+  setNewProdQty(prodId: string, changeToQty: number){
+    if(changeToQty <= 0 || changeToQty == null || changeToQty == undefined){
+      changeToQty = 0;
+    }
+    changeToQty = Number(changeToQty.toFixed());
+
+    this.inCart = JSON.parse(localStorage.getItem('cartItems'));
+    this.inCart.forEach(item => {
+      if(item.id == prodId){
+        item.quantity = changeToQty;
+      }
+    });
+    this.cartUpdated.next(this.inCart);
+    localStorage.setItem('cartItems', JSON.stringify(this.inCart));
+  }
+
   removeOneFromCart(prodId: string) {
     this.inCart = JSON.parse(localStorage.getItem('cartItems'));
     this.cartTotal = JSON.parse(localStorage.getItem('cartTotal'));
