@@ -50,7 +50,6 @@ export class CartService {
   ) {
     let alreadyInCart = false;
     this.inCart = JSON.parse(localStorage.getItem('cartItems'));
-    this.cartTotal = JSON.parse(localStorage.getItem('cartTotal'));
     if (this.inCart === null) {
       this.inCart = [];
     }
@@ -87,12 +86,9 @@ export class CartService {
         positionClass: 'toast-top-left',
       });
     }
+    this.calculateTotal();
     this.cartUpdated.next(this.inCart);
     localStorage.setItem('cartItems', JSON.stringify(this.inCart));
-
-    this.cartTotal = this.cartTotal + currentPrice;
-    this.cartTotalUpdated.next(this.cartTotal);
-    localStorage.setItem('cartTotal', this.cartTotal);
   }
 
   setNewProdQty(prodId: string, changeToQty: number){
@@ -100,20 +96,19 @@ export class CartService {
       changeToQty = 0;
     }
     changeToQty = Number(changeToQty.toFixed());
-
-    this.inCart = JSON.parse(localStorage.getItem('cartItems'));
+    this.cartTotal = JSON.parse(localStorage.getItem('cartTotal'));
     this.inCart.forEach(item => {
       if(item.id == prodId){
         item.quantity = changeToQty;
       }
     });
+    this.calculateTotal();
     this.cartUpdated.next(this.inCart);
     localStorage.setItem('cartItems', JSON.stringify(this.inCart));
   }
 
   removeOneFromCart(prodId: string) {
     this.inCart = JSON.parse(localStorage.getItem('cartItems'));
-    this.cartTotal = JSON.parse(localStorage.getItem('cartTotal'));
 
     let alreadyRemoved = false;
     this.inCart.findIndex((value, index) => {
@@ -121,7 +116,6 @@ export class CartService {
         if (alreadyRemoved == false) {
           if (this.inCart[index].quantity > 1) {
             this.inCart[index].quantity--;
-            this.cartTotal = this.cartTotal - this.inCart[index].currentPrice;
             this.toastr.info(
               'One removed from cart!',
               this.inCart[index].title,
@@ -137,8 +131,16 @@ export class CartService {
         }
       }
     });
+    this.calculateTotal();
     this.cartUpdated.next(this.inCart);
     localStorage.setItem('cartItems', JSON.stringify(this.inCart));
+  }
+
+  calculateTotal(){
+    this.cartTotal = 0;
+    this.inCart.forEach(item => {
+      this.cartTotal += item.quantity * item.currentPrice;
+    });
     this.cartTotalUpdated.next(this.cartTotal);
     localStorage.setItem('cartTotal', this.cartTotal);
   }
@@ -151,7 +153,6 @@ export class CartService {
   }
 
   getNewCartData() {
-    console.log('Got cart data');
     return this.cartUpdated.asObservable();
   }
 

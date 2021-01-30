@@ -4997,3 +4997,11 @@ margin:auto !important;
 .chart {
   margin-bottom: 5rem;
 }
+
+.map {
+  display:block;
+  margin:auto;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  width: 80%;
+}

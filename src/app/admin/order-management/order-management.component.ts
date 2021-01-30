@@ -49,7 +49,6 @@ export class OrderManagementComponent implements OnInit {
   onChangePage(pageEvent: PageEvent) {
     this.ordersPerPage = pageEvent.pageSize;
     this.currentPage = pageEvent.pageIndex + 1;
-    console.log(this.ordersPerPage + "  " +  this.currentPage);
 
     this.isLoading = true;
     this.ordersService.getAllOrders(this.ordersPerPage,this.currentPage)
@@ -92,7 +91,6 @@ export class OrderManagementComponent implements OnInit {
     this.ordersService
       .updateOrder(id, newStatusUpdate)
       .subscribe((response) => {
-        console.log(response);
         if (response.message === 'Updating order successful!') {
           this.toastr.success('', 'Order update successfull!', {
             closeButton: true,

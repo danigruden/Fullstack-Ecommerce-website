@@ -8,6 +8,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { UserProfileComponent } from './auth/user-profile/user-profile.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ContactPageComponent } from './contact-page/contact-page.component';
 import { ProductCreateComponent } from './products/product-create/product-create.component';
 import { ProductListComponent } from './products/product-list/product-list.component';
 import { SingleProductPageComponent } from './products/single-product-page/single-product-page.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   {path: "login", component: LoginComponent},
   {path: "signup", component: SignupComponent},
   {path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard]},
+  {path: 'contact', component: ContactPageComponent },
   {path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuard]},
   {path: 'orderManagement', component: OrderManagementComponent, canActivate: [AuthGuard]}
 ];

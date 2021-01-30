@@ -61,8 +61,8 @@
         <div class="col-lg-2 col-md-2 col-12">
           <!-- Logo -->
           <div class="logo">
-            <a href="index.html"
-              ><img src="/assets/images/logo.png" alt="logo"
+            <a roterLink="/" class="clickable"
+              ><img src="/assets/images/Mean-stack.png" alt="logo"
             /></a>
           </div>
           <!--/ End Logo -->
@@ -179,7 +179,10 @@
                           >Checkout</a
                         >
                       </li>
-                      <li><a>Contact Us</a></li>
+                      <li><a
+                        routerLink="/contact"
+                        routerLinkActive="is-active">Contact Us</a>
+                      </li>
                       <li>
                         <a
                           routerLink="/profile"

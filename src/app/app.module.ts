@@ -26,6 +26,7 @@ import { UserProfileComponent } from './auth/user-profile/user-profile.component
 import { AnalyticsComponent } from './admin/analytics/analytics.component';
 import { OrderManagementComponent } from './admin/order-management/order-management.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { ContactPageComponent } from './contact-page/contact-page.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     CheckoutComponent,
     UserProfileComponent,
     AnalyticsComponent,
-    OrderManagementComponent
+    OrderManagementComponent,
+    ContactPageComponent
   ],
   imports: [
     BrowserModule,
