@@ -11,13 +11,6 @@ const BACKEND_URL = environment.apiUrl + '/orders';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  /*
-  private order: Order[] = [];
-  private ordersUpdated = new Subject<{
-    products: Order[];
-    productCount: number;
-  }>();
-*/
 
   constructor(
     private http: HttpClient,
@@ -27,8 +20,6 @@ export class OrderService {
   ) {}
 
   createOrder(productsOrdered: Array<{}>) {
-    //const orderData = new FormData();
-    //orderData.append('productsOrdered', JSON.stringify(productsOrdered));
     const orderData: Order = {
       productsOrdered: productsOrdered,
     };
@@ -59,7 +50,6 @@ export class OrderService {
       );
   }
 
-
   getUserOrders() {
     return this.http
       .get<{ message: string; ordersData: Array<{ customerEmail: string,
@@ -68,12 +58,21 @@ export class OrderService {
       orderDate: Date, deliveredStatus: boolean}>  }>(BACKEND_URL+"/user");
   }
 
-  getAllOrders() {
+  getAllOrders(productsPerPage: number, currentPage: number) {
+    let queryParams = `?pagesize=${productsPerPage}&page=${currentPage}`;
     return this.http
-      .get<{ message: string; ordersData: Array<{ customerEmail: string,
+      .get<{ message: string; ordersData: Array<{ _id:string, customerEmail: string,
       customerId: string,
       productsOrdered: Array <{id: string,title: string,category: string,price: number,quantity: number}>,
-      orderDate: Date, deliveredStatus: boolean}>  }>(BACKEND_URL+"/all");
+      orderDate: Date, deliveredStatus: string}>, numOfOrders: number  }>(BACKEND_URL+"/all"+queryParams);
   }
 
+  updateOrder(id: string, newStatusUpdate: string){
+    let orderData = {
+      id: id,
+      orderStatus: newStatusUpdate
+    };
+    return this.http
+    .patch<{ message: string}>(BACKEND_URL, orderData);
+  }
 }

@@ -13,7 +13,6 @@
   [src]="currentProdData?.imagePath"
   alt="{{ currentProdData?.title }}"/>
 </div>
-
   <div
       class="single-prod-discount"
       *ngIf="currentProdData?.beforeDiscountPrice != null"
@@ -24,16 +23,12 @@
           (currentProdData?.currentProdPrice * 100) /
             currentProdData?.beforeDiscountPrice
         ).toFixed(0)
-      }}% Off</div>
-
-
+      }}% off</div>
 </div>
 <div class="rightprod">
   <div class="single-product-page-content">
-
-    <button class="btn back-to-shop left-button" routerLink="/">Back to shop</button> <button class="btn back-to-shop right-button" routerLink="/checkout">Checkout</button>
-
-
+    <button class="btn back-to-shop left-button" routerLink="/">Back to shop</button>
+     <button class="btn back-to-shop right-button" routerLink="/checkout">Checkout</button>
     <div class="single-prod-path clickable"><span class="specific"  (click)="onSearchAllProds()">All products / </span>
       <span class="specific" (click)="onSearchThisCategory()">{{ currProdCategoryString }} / </span>
     </div>

@@ -142,7 +142,6 @@ router.get("", (req, res, next) => {
     };
   }
 
-  //{$lte : Number(req.query.priceSearchMin)}
   Product.countDocuments().then((numOfAllProdsQuery) => {
     if (numOfAllProdsQuery == 0) {
       res.status(201).json({
@@ -162,6 +161,7 @@ router.get("", (req, res, next) => {
   });
 
   const productQuery = Product.find(query);
+
   let fetchedProducts;
   if (pageSize && currentPage) {
     productQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);

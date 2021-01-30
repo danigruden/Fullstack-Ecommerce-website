@@ -13,6 +13,8 @@ const path = require("path");
 
 const app = express();
 
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 mongoose
   .connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,

@@ -155,6 +155,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.currentPage = pageEvent.pageIndex + 1;
     this.productsPerPage = pageEvent.pageSize;
     this.searchWithFilters();
+    window.scrollTo({ top: 50, behavior: 'smooth' })
   }
 
   onDelete(productId: string) {
@@ -170,7 +171,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   onSelectCategory() {
-    let searchCategoriesQuery;
+    let searchCategoriesQuery="";
     if (this.productfilterService.electricCategory) {
       searchCategoriesQuery =
         searchCategoriesQuery + '&category=electricGuitars';

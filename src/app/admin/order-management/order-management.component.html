@@ -1,53 +1,44 @@
-<div class="preloader" *ngIf="isLoading">
-  <div class="preloader-inner">
-    <div class="preloader-icon">
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-</div>
-
-<!-- Shopping Cart -->
 <div
-  class="shopping-cart section"
+  class="section"
   *ngIf="userOrdersData?.ordersData.length !== 0"
 >
   <div class="marge-preset">
     <h2>All orders</h2>
   </div>
 
-  <div class="container">
+  <div class="containe orders-table">
     <div class="row">
       <div class="col-12">
-        <!-- Shopping Summery -->
         <table class="table shopping-summery">
           <thead>
             <tr class="main-hading">
-              <th>Order number</th>
+              <th>Order ID</th>
               <th>Order date and time</th>
+              <th class="text-center">User e-mail</th>
               <th class="text-center">Products ordered</th>
               <th class="text-center">Products total</th>
               <th class="text-center">Order total</th>
               <th class="text-center">Status</th>
+              <th class="text-center">Change delivery status</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="
-                let order of userOrdersData?.ordersData;
-                let i = index;
-              "            >
+            <tr *ngFor="let order of userOrdersData?.ordersData">
               <td class="product-des" data-title="Order number">
-                <p class="product-name">
-                  <a>{{ userOrdersData.ordersData.length - i }}</a>
+                <p class="price">
+                  <a>{{ order._id }}</a>
                 </p>
               </td>
               <td class="price" data-title="Date and time">
                 <span>{{ order.orderDate }}</span>
               </td>
+              <td class="price" data-title="Date and time">
+                <span>{{ order.customerEmail }}</span>
+              </td>
               <td class="price" data-title="Products">
                 <div *ngFor="let orderProd of order.productsOrdered">
-                  <span class="text-weight" data-title="Products">- {{ orderProd.title }} </span
+                  <span class="text-weight" data-title="Products"
+                    >- {{ orderProd.title }} </span
                   ><span>
                     ({{ orderProd.quantity }} X €{{
                       orderProd.price.toFixed(2)
@@ -66,26 +57,56 @@
                   >
                 </div>
               </td>
-              <td class="total-amount text-weight" data-title="Total">= {{ order.total.toFixed(2) }}€</td>
-              <td class="total-amount" data-title="Status">
-                <span *ngIf="!order.deliveredStatus" class="ordered text-weight"
-                  >Ordered</span
-                ><span
-                  class="delivered text-weight"
-                  *ngIf="order.deliveredStatus"
-                  >Delivered</span
+              <td class="total-amount text-weight" data-title="Total">
+                = {{ order.total.toFixed(2) }}€
+              </td>
+              <td
+                class="total-amount text-weight"
+                data-title="Status"
+              >
+                <span
+                  class="ordered text-weight"
+                  [ngClass]="
+                    order.orderStatus === 'Ordered'
+                      ? 'ordered'
+                      : order.orderStatus === 'Delivered'
+                      ? 'delivered'
+                      : 'sent'
+                  "
+                  >{{ order.orderStatus }}</span
                 >
               </td>
-
+              <td>
+                <form [formGroup]="statusForm" (ngSubmit)="onSubmit(order._id)">
+                  <select (ngModelChange)="statusChanged(order._id)" class="text-weight clickable" [ngClass]="{'cursor-block': !order.changed && oneStatusChanged}" formControlName="newStatus">
+                    <option value="" disabled selected>{{order.orderStatus}}</option>
+                    <option value="Ordered" class="ordered">Ordered</option>
+                    <option value="Delivery sent" class="sent" >Delivery sent</option>
+                    <option value="Delivered" class="delivered">Delivered</option>
+                  </select>
+                  <button *ngIf="order.changed" class="btn" [ngClass]="{'invisible' : !order.changed}">Save</button>
+                </form>
+              </td>
             </tr>
           </tbody>
         </table>
-        <!--/ End Shopping Summery -->
       </div>
     </div>
   </div>
 </div>
-<!--/ End Shopping Cart -->
+
+
+  <ul style="margin-right:44% !important">
+    <li>
+      <mat-paginator
+        [length]="totalOrders"
+        [pageSize]="ordersPerPage"
+        [pageSizeOptions]="ordersPerPageOptions"
+        (page)="onChangePage($event)"
+        *ngIf="userOrdersData?.ordersData.length > 0">
+      </mat-paginator>
+    </li>
+   </ul>
 
 <div
   class="marge-preset"
@@ -95,4 +116,13 @@
   "
 >
   <h2>No orders found</h2>
+</div>
+
+<div class="preloader"  *ngIf="isLoading">
+  <div class="preloader-inner">
+    <div class="preloader-icon">
+      <span></span>
+      <span></span>
+    </div>
+  </div>
 </div>

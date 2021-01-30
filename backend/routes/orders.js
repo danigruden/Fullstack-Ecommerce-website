@@ -8,6 +8,7 @@ const Order = require("../models/order");
 const router = express.Router();
 
 const nodemailer = require("nodemailer");
+const order = require("../models/order");
 
 router.post("", checkAuthentication, (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
@@ -101,18 +102,56 @@ router.get("/user", checkAuthentication, (req, res, next) => {
 // Get all orders data from all users from database
 router.get("/all", checkAuthentication, (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
-if(req.userData.userType !== "admin"){
-  return res.status(401).json({
-    message: "Access denied",
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+
+  if (req.userData.userType !== "admin") {
+    return res.status(401).json({
+      message: "Access denied",
+    });
+  }
+  Order.countDocuments().then((numOfAllProdsQuery) => {
+      Order.find()
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize)
+      .sort({ orderDate: "desc" })
+      .then((result) => {
+        if (result) {
+          res
+            .status(200)
+            .json({ message: "Getting orders successful!", ordersData: result, numOfOrders: numOfAllProdsQuery });
+        } else {
+          return res.status(401).json({
+            message: "Authorization failed",
+          });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: "Getting orders failed",
+        });
+      });
   });
-}
-  Order.find()
-    .sort({ orderDate: "desc" })
+});
+
+// Update order status for one order
+router.patch("", checkAuthentication, (req, res, next) => {
+  const url = req.protocol + "://" + req.get("host");
+  if (req.userData.userType !== "admin") {
+    return res.status(401).json({
+      message: "Access denied",
+    });
+  }
+  orderID = req.body.id;
+  newOrderStatus = req.body.orderStatus;
+  Order.findByIdAndUpdate( orderID , { 'orderStatus': newOrderStatus })
     .then((result) => {
       if (result) {
+        let ID = JSON.stringify(orderID);
+        let newStatus = JSON.stringify(newOrderStatus);
         res
           .status(200)
-          .json({ message: "Getting orders successful!", ordersData: result });
+          .json({ message: "Updating order successful!" });
       } else {
         return res.status(401).json({
           message: "Authorization failed",
@@ -121,7 +160,7 @@ if(req.userData.userType !== "admin"){
     })
     .catch((error) => {
       res.status(500).json({
-        message: "Getting orders failed",
+        message: "Updating order failed",
       });
     });
 });

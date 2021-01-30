@@ -18,7 +18,7 @@ export class AnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-        this.userOrdersService.getAllOrders().subscribe((userOrders) => {
+        this.userOrdersService.getAllOrders(null,null).subscribe((userOrders) => {
           this.userOrdersData = userOrders;
           this.userOrdersData.ordersData.forEach((order) => {
             let orderPrice = 0;

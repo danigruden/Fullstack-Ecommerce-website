@@ -13,7 +13,6 @@ export class CheckoutComponent implements OnInit {
   isLoading = false;
   inCart = [];
   cartDataToCheck: Array<any> = [];
-  //finalCheckoutData : Array<{id: string, title: string, price: number}> = [];
   finalCheckoutData = [];
 
   total = 0;
@@ -37,6 +36,9 @@ export class CheckoutComponent implements OnInit {
           currentPrice = element.currentProdPrice;
           this.inCart.findIndex((value, index) => {
             if (value.id == element._id) {
+              if(this.inCart[index].quantity <= 1 || typeof this.inCart[index].quantity !== 'number') {
+                this.inCart[index].quantity = 1;
+              }
               quantity = this.inCart[index].quantity.toFixed();
             }})
 

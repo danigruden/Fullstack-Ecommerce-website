@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy{
   private cartListenerSub: Subscription;
   private cartTotalListenerSub: Subscription;
 
-  constructor(private authService: AuthService, private productfilterService: ProductFilterService, private cartService: CartService ,private router: Router){}
+  constructor(private authService: AuthService, private productfilterService: ProductFilterService, private cartService: CartService ,public router: Router){}
 
   keywordHeader = "";
   inHeaderCart;

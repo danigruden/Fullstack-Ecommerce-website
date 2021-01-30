@@ -5,7 +5,7 @@ const orderSchema = mongoose.Schema({
   customerId: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
   productsOrdered: {type: Array , required: true},
   orderDate: {type: Date},
-  deliveredStatus: {type: Boolean, required:true, default: false}
+  orderStatus: {type: String, required:true, default: "Ordered"}
 });
 
 module.exports = mongoose.model('Order',orderSchema);

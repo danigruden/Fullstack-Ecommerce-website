@@ -95,16 +95,7 @@
         <div class="col-lg-2 col-md-3 col-12">
           <div class="right-bar">
             <!-- Search Form -->
-            <div class="sinlge-bar">
-              <a href="#" class="single-icon"
-                ><i class="fa fa-heart-o" aria-hidden="true"></i
-              ></a>
-            </div>
-            <div class="sinlge-bar">
-              <a href="#" class="single-icon"
-                ><i class="fa fa-user-circle-o" aria-hidden="true"></i
-              ></a>
-            </div>
+
             <div class="sinlge-bar shopping">
               <a routerLink="/cart" class="single-icon"
                 ><i class="ti-bag"></i>
@@ -176,7 +167,7 @@
                   <div class="nav-inner">
                     <ul class="nav main-menu menu navbar-nav">
                       <li>
-                        <a routerLink="/" routerLinkActive="is-active">Home</a>
+                        <a routerLink='/' [ngClass]="{'home-route-class' :  this.router.url === '/'}">Home</a>
                       </li>
                       <li>
                         <a routerLink="/cart" routerLinkActive="is-active"

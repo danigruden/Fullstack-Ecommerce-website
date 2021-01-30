@@ -68,13 +68,17 @@
               </td>
               <td class="total-amount text-weight" data-title="Total">= {{ order.total.toFixed(2) }}€</td>
               <td class="total-amount" data-title="Status">
-                <span *ngIf="!order.deliveredStatus" class="ordered text-weight"
-                  >Ordered</span
-                ><span
-                  class="delivered text-weight"
-                  *ngIf="order.deliveredStatus"
-                  >Delivered</span
-                >
+                <span
+                class="ordered text-weight"
+                [ngClass]="
+                  order.orderStatus === 'Ordered'
+                    ? 'ordered'
+                    : order.orderStatus === 'Delivered'
+                    ? 'delivered'
+                    : 'sent'
+                "
+                >{{ order.orderStatus }}</span
+              >
               </td>
 
             </tr>
